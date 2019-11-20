@@ -10,9 +10,13 @@ import {
 } from './version';
 
 // Import the CSS
-import '../css/widget.css'
+import '../css/widget.css';
 
-//import Jsmol librar
+// Import the underscore.js
+import * as _ from 'underscore';  
+import $ from 'jquery'; 
+
+declare var Jmol: any;
 
 export
 class JmolModel extends DOMWidgetModel {
@@ -27,6 +31,12 @@ class JmolModel extends DOMWidgetModel {
       value : 'Hello World Dou'
     };
   }
+
+  initialize() {
+        DOMWidgetModel.prototype.initialize.apply(this, arguments);
+        this.attributes['jmol_window_id'] = _.uniqueId('jmol_window');
+        this.attributes['jmol_app_id'] = _.uniqueId('jmol_app');          
+    }
 
   static serializers: ISerializers = {
       ...DOMWidgetModel.serializers,
@@ -44,13 +54,62 @@ class JmolModel extends DOMWidgetModel {
 
 export
 class JmolView extends DOMWidgetView {
-  render() {
-    this.el.classList.add('custom-widget');
+    template = _.template("<div id='jsmolapp' style='border:5px solid red; height: " + 500 + "px; width: " + 500 + "px; margin:0 auto;'>"); 
 
-    this.model.on('change:value', this._value_changed, this);
+    createDiv() {
+        const jsmolwindowID = this.model.get('jmol_window_id');
+        console.log(jsmolwindowID+"&*&*&*&*&*&*");
+        const divstyle = $("<div id='"+ jsmolwindowID + "' style='border:5px solid red; height: " +
+                             500 + "px; width: " + 500 + "px; margin:0 auto;'>");
+        return(divstyle);
+    }
+
+  initialize(): void {
+
+    const url = "https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js";
+    const script = document.createElement('script');
+    script.src = url;
+    script.async = false; 
+    // script.onload = () => this._init()
+    document.querySelector("head")!.appendChild(script); 
   }
 
-  _value_changed() {
-      this.el.textContent = this.model.get('value');
+    createView() {
+        const jsmolwindowID = this.model.get('jmol_window_id');
+        const jsmolappID = this.model.get('jmol_app_id'); 
+
+        $(document).ready(function() {
+            var Info = { 
+                addSelectionOptions: false, 
+                debug: false, 
+                j2sPath: "https://chemapps.stolaf.edu/jmol/jsmol/j2s", 
+                readyFunction: null, 
+                script: "background black; frank on; cartoon on; spacefill off; wireframe off; backbone 1.5; color backbone chains", 
+                serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php", 
+                src: null, 
+                use: "HTML5", 
+                height:"100%", 
+                width:"100%",
+             };
+
+        $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));
+        Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;"); 
+        Jmol.script(eval(jsmolappID), 'set pickCallback "myPickCallback"');  
+    });
+
+
+    }
+
+    render() {
+      // this.el.classList.add('custom-widget');
+      //  $(this.el).html(this.template);
+        $(this.el).append(this.createDiv());
+        this.createView();
+
+      //  this.model.on('change:value', this._value_changed, this);
   }
+
+//   _value_changed() {
+//       this.el.textContent = this.model.get('value');
+//   }
 }
