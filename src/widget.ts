@@ -101,10 +101,10 @@ class JmolView extends DOMWidgetView {
     }
 
     render() {
-      // this.el.classList.add('custom-widget');
-      //  $(this.el).html(this.template);
-        $(this.el).append(this.createDiv());
-        this.createView();
+      //  this.el.classList.add('custom-widget');
+      //  this.$el.html(this.template);
+    this.$el.append(this.createDiv());
+    this.createView();
 
       //  this.model.on('change:value', this._value_changed, this);
   }
