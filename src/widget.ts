@@ -70,7 +70,7 @@ class JmolView extends DOMWidgetView {
     const script = document.createElement('script');
     script.src = url;
     script.async = false; 
-    // script.onload = () => this._init()
+    script.onload = () => this.createView(); 
     document.querySelector("head")!.appendChild(script); 
   }
 
@@ -96,7 +96,6 @@ class JmolView extends DOMWidgetView {
         Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;"); 
         Jmol.script(eval(jsmolappID), 'set pickCallback "myPickCallback"');  
     });
-
 
     }
 
