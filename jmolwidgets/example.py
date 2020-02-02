@@ -8,12 +8,12 @@
 TODO: Add module docstring
 """
 
-import ipywidgets as widgets 
+import ipywidgets as widgets
 from ipywidgets import DOMWidget
-from traitlets import Unicode, Int, observe, List 
+from traitlets import Unicode, Int, observe, List
 from ._frontend import module_name, module_version
 
-out = widgets.Output(layout={'border':'1px soild red'}); 
+out = widgets.Output(layout={'border':'1px soild red'});
 
 class WidgetJmol(DOMWidget):
     """TODO: Add docstring here
@@ -26,7 +26,8 @@ class WidgetJmol(DOMWidget):
     _view_module_version = Unicode(module_version).tag(sync=True)
 
     value = Unicode('Hello World!').tag(sync=True)
-    
+    script = Unicode('').tag(sync=True)
+
     atomno = Int().tag(sync=True)
     _inital_orientation = List([]).tag(sync=True)
     _current_orientation = List([]).tag(sync=True)
@@ -35,8 +36,8 @@ class WidgetJmol(DOMWidget):
     @observe('atomno')
     def _pick_changed(self, change):
         with out:
-            print(self.atomno) 
+            print(self.atomno)
 
     @observe('_current_orientation')
     def _orientation_changed(self, change):
-        print(self._current_orientation) 
+        print(self._current_orientation)

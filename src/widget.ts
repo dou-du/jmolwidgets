@@ -13,8 +13,8 @@ import {
 import '../css/widget.css';
 
 // Import the underscore.js
-import * as _ from 'underscore';  
-import $ from 'jquery'; 
+import * as _ from 'underscore';
+import $ from 'jquery';
 
 declare var Jmol: any;
 
@@ -35,7 +35,7 @@ class JmolModel extends DOMWidgetModel {
   initialize() {
         DOMWidgetModel.prototype.initialize.apply(this, arguments);
         this.attributes['jmol_window_id'] = _.uniqueId('jmol_window');
-        this.attributes['jmol_app_id'] = _.uniqueId('jmol_app');          
+        this.attributes['jmol_app_id'] = _.uniqueId('jmol_app');
     }
 
   static serializers: ISerializers = {
@@ -54,7 +54,7 @@ class JmolModel extends DOMWidgetModel {
 
 export
 class JmolView extends DOMWidgetView {
-    template = _.template("<div id='jsmolapp' style='border:5px solid red; height: " + 500 + "px; width: " + 500 + "px; margin:0 auto;'>"); 
+    template = _.template("<div id='jsmolapp' style='border:5px solid red; height: " + 500 + "px; width: " + 500 + "px; margin:0 auto;'>");
 
     createDiv() {
         const jsmolwindowID = this.model.get('jmol_window_id');
@@ -69,32 +69,32 @@ class JmolView extends DOMWidgetView {
     const url = "https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js";
     const script = document.createElement('script');
     script.src = url;
-    script.async = false; 
-    script.onload = () => this.createView(); 
-    document.querySelector("head")!.appendChild(script); 
+    script.async = false;
+    script.onload = () => this.createView();
+    document.querySelector("head")!.appendChild(script);
   }
 
     createView() {
         const jsmolwindowID = this.model.get('jmol_window_id');
-        const jsmolappID = this.model.get('jmol_app_id'); 
+        const jsmolappID = this.model.get('jmol_app_id');
 
         $(document).ready(function() {
-            var Info = { 
-                addSelectionOptions: false, 
-                debug: false, 
-                j2sPath: "https://chemapps.stolaf.edu/jmol/jsmol/j2s", 
-                readyFunction: null, 
-                script: "background black; frank on; cartoon on; spacefill off; wireframe off; backbone 1.5; color backbone chains", 
-                serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php", 
-                src: null, 
-                use: "HTML5", 
-                height:"100%", 
+            var Info = {
+                addSelectionOptions: false,
+                debug: false,
+                j2sPath: "https://chemapps.stolaf.edu/jmol/jsmol/j2s",
+                readyFunction: null,
+                script: "background black; frank on; cartoon on; spacefill off; wireframe off; backbone 1.5; color backbone chains",
+                serverURL: "https://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php",
+                src: null,
+                use: "HTML5",
+                height:"100%",
                 width:"100%",
              };
 
         $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));
-        Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;"); 
-        Jmol.script(eval(jsmolappID), 'set pickCallback "myPickCallback"');  
+        Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
+        Jmol.script(eval(jsmolappID), 'set pickCallback "myPickCallback"');
     });
 
     }
@@ -105,9 +105,15 @@ class JmolView extends DOMWidgetView {
     this.$el.append(this.createDiv());
     this.createView();
 
+    this.model.on('change:script', this._script_changed, this);
+
       //  this.model.on('change:value', this._value_changed, this);
   }
 
+  private _script_changed(){
+    const jsmolappID = this.model.get('jmol_app_id');
+    Jmol.script(eval(jsmolappID), this.model.get('script'));
+  }
 //   _value_changed() {
 //       this.el.textContent = this.model.get('value');
 //   }
