@@ -1,4 +1,3 @@
-
 # jmolwidgets
 
 [![Build Status](https://travis-ci.org/EPFL/jmolwidgets.svg?branch=master)](https://travis-ci.org/EPFL/jmolwidgets)
