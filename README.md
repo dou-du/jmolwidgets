@@ -26,3 +26,12 @@ the nbextension:
 ```bash
 jupyter nbextension enable --py [--sys-prefix|--user|--system] jmolwidgets
 ```
+For development:
+```
+pip install -e .
+jupyter nbextension install --py --symlink --sys-prefix jmolwidgets
+jupyter nbextension enable --py --sys-prefix jmolwidgets
+jlpm
+jlpm run Build
+jupyter labextension install . 
+```
