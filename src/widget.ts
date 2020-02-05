@@ -85,6 +85,12 @@ class JmolView extends DOMWidgetView {
             that.touch();
         };
 
+        (<any>window).set_pickcallback = (a: any, b: any, c: any)=>{
+            console.log("The picked atomno:" + c);
+            that.model.set('atomno', Number(c));
+            that.touch();
+        };
+
         $(document).ready(function() {
             var Info = {
                 addSelectionOptions: false,
@@ -97,12 +103,12 @@ class JmolView extends DOMWidgetView {
                 use: "HTML5",
                 height:"100%",
                 width:"100%",
-                MeasureCallback: "set_measure"
+                MeasureCallback: "set_measure",
              };
 
         $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));
         Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
-        Jmol.script(eval(jsmolappID), 'set pickCallback "myPickCallback"');
+        Jmol.script(eval(jsmolappID), 'set pickCallback "set_pickcallback"');
     });
 
     }
