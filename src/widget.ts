@@ -78,6 +78,13 @@ class JmolView extends DOMWidgetView {
         const jsmolwindowID = this.model.get('jmol_window_id');
         const jsmolappID = this.model.get('jmol_app_id');
 
+        var that = this;
+        (<any>window).set_measure = (a: any, b: any, c: any, d: any, e: any)=>{
+            console.log("The distance is:" + e);
+            that.model.set('measure_distance', Number(e));
+            that.touch();
+        };
+
         $(document).ready(function() {
             var Info = {
                 addSelectionOptions: false,
@@ -90,6 +97,7 @@ class JmolView extends DOMWidgetView {
                 use: "HTML5",
                 height:"100%",
                 width:"100%",
+                MeasureCallback: "set_measure"
              };
 
         $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));

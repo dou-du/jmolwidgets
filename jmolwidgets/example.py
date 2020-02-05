@@ -10,7 +10,7 @@ TODO: Add module docstring
 
 import ipywidgets as widgets
 from ipywidgets import DOMWidget
-from traitlets import Unicode, Int, observe, List
+from traitlets import Unicode, Int, observe, List, Float
 from ._frontend import module_name, module_version
 
 out = widgets.Output(layout={'border':'1px soild red'});
@@ -27,6 +27,7 @@ class WidgetJmol(DOMWidget):
 
     value = Unicode('Hello World!').tag(sync=True)
     script = Unicode('').tag(sync=True)
+    measure_distance = Float().tag(sync=True)
 
     atomno = Int().tag(sync=True)
     _inital_orientation = List([]).tag(sync=True)
@@ -41,3 +42,8 @@ class WidgetJmol(DOMWidget):
     @observe('_current_orientation')
     def _orientation_changed(self, change):
         print(self._current_orientation)
+
+    @observe('measure_distance')
+    def measure_distance_changed(self, change):
+        with out:
+            print(self.measure_distance) 
