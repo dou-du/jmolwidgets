@@ -132,7 +132,7 @@ class JmolView extends DOMWidgetView {
   }
 
   private _structure_changed(){
-    const base_url = window.location.origin.replace('/lab','');
+    const base_url = window.location.href.replace('/lab','');
     const jsmolappID = this.model.get('jmol_app_id');
     const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
     console.log(the_script + "%&%&%&%&%&%*********");
