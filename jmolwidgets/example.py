@@ -27,6 +27,7 @@ class WidgetJmol(DOMWidget):
 
     value = Unicode('Hello World!').tag(sync=True)
     script = Unicode('').tag(sync=True)
+    structure = Unicode('').tag(sync=True)
     measure_distance = Float().tag(sync=True)
 
     atomno = Int().tag(sync=True)
@@ -46,4 +47,4 @@ class WidgetJmol(DOMWidget):
     @observe('measure_distance')
     def measure_distance_changed(self, change):
         with out:
-            print(self.measure_distance) 
+            print(self.measure_distance)

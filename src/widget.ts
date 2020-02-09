@@ -121,6 +121,7 @@ class JmolView extends DOMWidgetView {
     this.createView();
 
     this.model.on('change:script', this._script_changed, this);
+    this.model.on('change:structure', this._structure_changed, this);
 
       //  this.model.on('change:value', this._value_changed, this);
   }
@@ -128,6 +129,14 @@ class JmolView extends DOMWidgetView {
   private _script_changed(){
     const jsmolappID = this.model.get('jmol_app_id');
     Jmol.script(eval(jsmolappID), this.model.get('script'));
+  }
+
+  private _structure_changed(){
+    const base_url = window.location.origin.replace('/lab','');
+    const jsmolappID = this.model.get('jmol_app_id');
+    const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
+    console.log(the_script + "%&%&%&%&%&%*********");
+    Jmol.script(eval(jsmolappID), the_script);
   }
 //   _value_changed() {
 //       this.el.textContent = this.model.get('value');
