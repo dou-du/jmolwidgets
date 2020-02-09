@@ -54,12 +54,13 @@ class JmolModel extends DOMWidgetModel {
 
 export
 class JmolView extends DOMWidgetView {
-    template = _.template("<div id='jsmolapp' style='border:5px solid red; height: " + 500 + "px; width: " + 500 + "px; margin:0 auto;'>");
+    template = _.template("<div id='jsmolapp' style='border:3px solid red; height: " + 500 +
+                          "px; width: " + 500 + "px; margin:0 auto;'>");
 
     createDiv() {
         const jsmolwindowID = this.model.get('jmol_window_id');
         console.log(jsmolwindowID+"&*&*&*&*&*&*");
-        const divstyle = $("<div id='"+ jsmolwindowID + "' style='border:5px solid red; height: " +
+        const divstyle = $("<div id='"+ jsmolwindowID + "' style='border:3px solid red; height: " +
                              500 + "px; width: " + 500 + "px; margin:0 auto;'>");
         return(divstyle);
     }
