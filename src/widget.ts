@@ -94,7 +94,7 @@ class JmolView extends DOMWidgetView {
       that.touch();
     };
 
-    $(document).ready(function() {
+    $(document).ready( async() => {
       var Info = {
         addSelectionOptions: false,
         debug: false,
@@ -109,12 +109,21 @@ class JmolView extends DOMWidgetView {
         MeasureCallback: "set_measure",
       };
 
-      $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));
+      let jmol_html = await Jmol.getAppletHtml(jsmolappID, Info);
+      $("#"+jsmolwindowID).html(jmol_html);
+
       $("#"+jsmolwindowID).mouseleave(() => {
         let orientation:string = Jmol.scriptEcho(eval(jsmolappID), "show orientation");
         that.model.set('_current_orientation', orientation);
         that.touch();
       });
+
+      $("#"+jsmolappID + "_canvas2d").mousedown(() => {
+      Jmol.script(eval(jsmolappID), "isosurface off"); });
+
+      $("#"+jsmolappID + "_canvas2d").mouseup(() => {
+      Jmol.script(eval(jsmolappID), "isosurface on"); });
+
       Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
       Jmol.script(eval(jsmolappID), 'set pickCallback "set_pickcallback"');
 
