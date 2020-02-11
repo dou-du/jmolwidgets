@@ -58,6 +58,8 @@ class JmolView extends DOMWidgetView {
   "px; width: " + 500 + "px; margin:0 auto;'>");
 
   _jmolradio: HTMLElement = document.createElement('div');
+  jsmolwindowID = this.model.get('jmol_window_id');
+  jsmolappID = this.model.get('jmol_app_id');
 
   createDiv() {
     const jsmolwindowID = this.model.get('jmol_window_id');
@@ -78,9 +80,6 @@ class JmolView extends DOMWidgetView {
   }
 
   createView() {
-    const jsmolwindowID = this.model.get('jmol_window_id');
-    const jsmolappID = this.model.get('jmol_app_id');
-
     var that = this;
     (<any>window).set_measure = (a: any, b: any, c: any, d: any, e: any)=>{
       console.log("The distance is:" + e);
@@ -109,61 +108,55 @@ class JmolView extends DOMWidgetView {
         MeasureCallback: "set_measure",
       };
 
-      let jmol_html = await Jmol.getAppletHtml(jsmolappID, Info);
-      $("#"+jsmolwindowID).html(jmol_html);
+      let jmol_html = await Jmol.getAppletHtml(that.jsmolappID, Info);
+      $("#"+that.jsmolwindowID).html(jmol_html);
 
-      $("#"+jsmolwindowID).mouseleave(() => {
-        let orientation:string = Jmol.scriptEcho(eval(jsmolappID), "show orientation");
+      $("#"+that.jsmolwindowID).mouseleave(() => {
+        let orientation:string = Jmol.scriptEcho(eval(that.jsmolappID), "show orientation");
         that.model.set('_current_orientation', orientation);
         that.touch();
       });
 
-      $("#"+jsmolappID + "_canvas2d").mousedown(() => {
-      Jmol.script(eval(jsmolappID), "isosurface off"); });
+      $("#"+that.jsmolappID + "_canvas2d").mousedown(() => {
+        Jmol.script(eval(that.jsmolappID), "isosurface off"); });
 
-      $("#"+jsmolappID + "_canvas2d").mouseup(() => {
-      Jmol.script(eval(jsmolappID), "isosurface on"); });
+        $("#"+that.jsmolappID + "_canvas2d").mouseup(() => {
+          Jmol.script(eval(that.jsmolappID), "isosurface on"); });
 
-      Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
-      Jmol.script(eval(jsmolappID), 'set pickCallback "set_pickcallback"');
+          Jmol.script(eval(that.jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
+          Jmol.script(eval(that.jsmolappID), 'set pickCallback "set_pickcallback"');
 
-      let jscript = ['spin on', 'spin off'];
-      that._jmolradio.innerHTML = Jmol.jmolRadioGroup(eval(jsmolappID),  jscript);
-    });
+          let jscript = ['spin on', 'spin off'];
+          that._jmolradio.innerHTML = Jmol.jmolRadioGroup(eval(that.jsmolappID),  jscript);
+        });
 
-  }
+      }
 
-  render() {
-    //  this.el.classList.add('custom-widget');
-    //  this.$el.html(this.template);
-    this.$el.append(this.createDiv());
-    this.createView();
+      render() {
+        //  this.el.classList.add('custom-widget');
+        //  this.$el.html(this.template);
+        this.$el.append(this.createDiv());
+        this.createView();
 
-    const hr: HTMLElement = document.createElement('hr');
-    this.$el.append(hr);
-    this.$el.append(this._jmolradio);
+        const hr: HTMLElement = document.createElement('hr');
+        this.$el.append(hr);
+        this.$el.append(this._jmolradio);
 
-    this.model.on('change:script', this._script_changed, this);
-    this.model.on('change:structure', this._structure_changed, this);
+        this.model.on('change:script', this._script_changed, this);
+        this.model.on('change:structure', this._structure_changed, this);
 
-    //  this.model.on('change:value', this._value_changed, this);
-  }
+        //  this.model.on('change:value', this._value_changed, this);
+      }
 
-  private _script_changed(){
-    const jsmolappID = this.model.get('jmol_app_id');
-    Jmol.script(eval(jsmolappID), this.model.get('script'));
-  }
+      private _script_changed(){
+        Jmol.script(eval(this.jsmolappID), this.model.get('script'));
+      }
 
-  private _structure_changed(){
-    const href = window.location.href;
-    const base_url = href.substring(0, href.indexOf('/lab'));
-    const jsmolappID = this.model.get('jmol_app_id');
-    const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
-    console.log(the_script + "%&%&%&%&%&%*********");
-    Jmol.script(eval(jsmolappID), the_script);
-  }
-
-  //   _value_changed() {
-  //       this.el.textContent = this.model.get('value');
-  //   }
-}
+      private _structure_changed(){
+        const href = window.location.href;
+        const base_url = href.substring(0, href.indexOf('/lab'));
+        const jsmolappID = this.model.get('jmol_app_id');
+        const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
+        Jmol.script(eval(jsmolappID), the_script);
+      }
+    }
