@@ -56,6 +56,8 @@ export
 class JmolView extends DOMWidgetView {
     template = _.template("<div id='jsmolapp' style='border:3px solid red; height: " + 500 +
                           "px; width: " + 500 + "px; margin:0 auto;'>");
+                          
+    _jmolradio: HTMLElement = document.createElement('div');
 
     createDiv() {
         const jsmolwindowID = this.model.get('jmol_window_id');
@@ -108,8 +110,15 @@ class JmolView extends DOMWidgetView {
              };
 
         $("#"+jsmolwindowID).html(Jmol.getAppletHtml(jsmolappID, Info));
+        $("#"+jsmolwindowID).mouseleave(() => {
+          let orientation:string = Jmol.scriptEcho(eval(jsmolappID), "show orientation");
+          that.model.set('_current_orientation', orientation);
+          that.touch();
+        });
         Jmol.script(eval(jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
         Jmol.script(eval(jsmolappID), 'set pickCallback "set_pickcallback"');
+
+        that._jmolradio.innerHTML = Jmol.jmolRadio(eval(jsmolappID), 'spin on');
     });
 
     }
@@ -117,14 +126,18 @@ class JmolView extends DOMWidgetView {
     render() {
       //  this.el.classList.add('custom-widget');
       //  this.$el.html(this.template);
-    this.$el.append(this.createDiv());
-    this.createView();
+      this.$el.append(this.createDiv());
+      this.createView();
 
-    this.model.on('change:script', this._script_changed, this);
-    this.model.on('change:structure', this._structure_changed, this);
+      const hr: HTMLElement = document.createElement('hr');
+      this.$el.append(hr);
+      this.$el.append(this._jmolradio);
+
+      this.model.on('change:script', this._script_changed, this);
+      this.model.on('change:structure', this._structure_changed, this);
 
       //  this.model.on('change:value', this._value_changed, this);
-  }
+    }
 
   private _script_changed(){
     const jsmolappID = this.model.get('jmol_app_id');
@@ -133,12 +146,13 @@ class JmolView extends DOMWidgetView {
 
   private _structure_changed(){
     const href = window.location.href;
-    const base_url = href.substring(0, href.indexOf('/lab')); 
+    const base_url = href.substring(0, href.indexOf('/lab'));
     const jsmolappID = this.model.get('jmol_app_id');
     const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
     console.log(the_script + "%&%&%&%&%&%*********");
     Jmol.script(eval(jsmolappID), the_script);
   }
+
 //   _value_changed() {
 //       this.el.textContent = this.model.get('value');
 //   }

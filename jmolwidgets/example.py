@@ -32,7 +32,7 @@ class WidgetJmol(DOMWidget):
 
     atomno = Int().tag(sync=True)
     _inital_orientation = List([]).tag(sync=True)
-    _current_orientation = List([]).tag(sync=True)
+    _current_orientation = Unicode('').tag(sync=True)
     count = Int(0).tag(sync=True)
 
     @observe('atomno')
