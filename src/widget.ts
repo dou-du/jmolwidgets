@@ -118,45 +118,47 @@ class JmolView extends DOMWidgetView {
       });
 
       $("#"+that.jsmolappID + "_canvas2d").mousedown(() => {
-        Jmol.script(eval(that.jsmolappID), "isosurface off"); });
+        Jmol.script(eval(that.jsmolappID), "isosurface off");
+      });
 
-        $("#"+that.jsmolappID + "_canvas2d").mouseup(() => {
-          Jmol.script(eval(that.jsmolappID), "isosurface on"); });
+      $("#"+that.jsmolappID + "_canvas2d").mouseup(() => {
+        Jmol.script(eval(that.jsmolappID), "isosurface on");
+      });
 
-          Jmol.script(eval(that.jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
-          Jmol.script(eval(that.jsmolappID), 'set pickCallback "set_pickcallback"');
+      Jmol.script(eval(that.jsmolappID), "load https://files.rcsb.org/view/1zaa.pdb;");
+      Jmol.script(eval(that.jsmolappID), 'set pickCallback "set_pickcallback"');
 
-          let jscript = ['spin on', 'spin off'];
-          that._jmolradio.innerHTML = Jmol.jmolRadioGroup(eval(that.jsmolappID),  jscript);
-        });
+      let jscript = ['spin on', 'spin off', 'unitcell on', 'unitcell off'];
+      that._jmolradio.innerHTML = Jmol.jmolRadioGroup(eval(that.jsmolappID),  jscript);
+    });
 
-      }
+  }
 
-      render() {
-        //  this.el.classList.add('custom-widget');
-        //  this.$el.html(this.template);
-        this.$el.append(this.createDiv());
-        this.createView();
+  render() {
+    //  this.el.classList.add('custom-widget');
+    //  this.$el.html(this.template);
+    this.$el.append(this.createDiv());
+    this.createView();
 
-        const hr: HTMLElement = document.createElement('hr');
-        this.$el.append(hr);
-        this.$el.append(this._jmolradio);
+    const hr: HTMLElement = document.createElement('hr');
+    this.$el.append(hr);
+    this.$el.append(this._jmolradio);
 
-        this.model.on('change:script', this._script_changed, this);
-        this.model.on('change:structure', this._structure_changed, this);
+    this.model.on('change:script', this._script_changed, this);
+    this.model.on('change:structure', this._structure_changed, this);
 
-        //  this.model.on('change:value', this._value_changed, this);
-      }
+    //  this.model.on('change:value', this._value_changed, this);
+  }
 
-      private _script_changed(){
-        Jmol.script(eval(this.jsmolappID), this.model.get('script'));
-      }
+  private _script_changed(){
+    Jmol.script(eval(this.jsmolappID), this.model.get('script'));
+  }
 
-      private _structure_changed(){
-        const href = window.location.href;
-        const base_url = href.substring(0, href.indexOf('/lab'));
-        const jsmolappID = this.model.get('jmol_app_id');
-        const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
-        Jmol.script(eval(jsmolappID), the_script);
-      }
-    }
+  private _structure_changed(){
+    const href = window.location.href;
+    const base_url = href.substring(0, href.indexOf('/lab'));
+    const jsmolappID = this.model.get('jmol_app_id');
+    const the_script: string = "load " + base_url + '/files' + this.model.get('structure');
+    Jmol.script(eval(jsmolappID), the_script);
+  }
+}
