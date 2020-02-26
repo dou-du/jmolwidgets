@@ -111,7 +111,7 @@ class JmolView extends DOMWidgetView {
       let jmol_html = await Jmol.getAppletHtml(that.jsmolappID, Info);
       $("#"+that.jsmolwindowID).html(jmol_html);
 
-      $("#"+that.jsmolwindowID).mouseleave(() => {
+      $("#"+that.jsmolappID + "_canvas2d").mouseleave(() => {
         let orientation:string = Jmol.scriptEcho(eval(that.jsmolappID), "show orientation");
         that.model.set('_current_orientation', orientation);
         that.touch();
